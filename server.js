@@ -1,4 +1,4 @@
-import app from '../health-center-backend/src/utils/app.js';
+import app from './app.js';
 import { connectDB } from '../health-center-backend/src/config/db.js'; // Import the new config
 
 const PORT = process.env.PORT || 5000;
