@@ -1,7 +1,3 @@
-/**
- * Middleware to restrict access based on user roles
- * @param {...string} allowedRoles - List of roles permitted to access the route
- */
 
     const authorize = (...allowedRoles) => {
         return (req, res, next) => {

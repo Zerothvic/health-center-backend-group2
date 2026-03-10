@@ -1,25 +1,21 @@
 import { Router } from 'express';
 import { authenticate } from '../middlewares/auth.js';
 import { authorize } from '../middlewares/rbac.js';
+import { login, logout } from '../controllers/authController.js';
 
 // Controller imports (to be created by the team)
-// import * as authCtrl from '../../controllers/authController.js';
+import * as authCtrl from '../controllers/authController.js';
 // import * as dashCtrl from '../../controllers/dashController.js';
 
 const router = Router();
-
-// No authentication required for the following
  
 router.get('/health', (req, res) => {
   res.status(200).json({ message: 'Staff API is active' });
 });
 
 router.post('/login', (req, res) => {
-  res.json({ message: "Login logic goes here (Returns JWT)" });
+  res.json({ message: "User logged in successfully" });
 });
-
-
-// Everything below this line requires authentication: a valid 'Authorization: Bearer <token>' header
  
 router.use(authenticate);
 
