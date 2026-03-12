@@ -86,6 +86,7 @@ export const getConsultationsByPatient = async (patientId) => {
   return consultations;
 };
 
+
 export const getConsultationsByDoctor = async (doctorId) => {
   const consultations = await Consultation.find({ doctor: doctorId })
     .populate("patient", "fullName phone patientId")
@@ -117,6 +118,24 @@ export const updateConsultation = async (id, data, doctorId) => {
   delete data.attendedBy;
 
   Object.assign(consultation, data);
+  await consultation.save();
+  return consultation;
+};
+
+
+export const updateVitalSigns = async (id, vitals) => {
+  const consultation = await Consultation.findById(id);
+  if (!consultation) {
+    const error = new Error("Consultation not found");
+    error.status = 404;
+    throw error;
+  }
+
+  consultation.vitalSigns = {
+    ...consultation.vitalSigns,
+    ...vitals,
+  };
+
   await consultation.save();
   return consultation;
 };

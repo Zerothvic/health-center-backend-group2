@@ -4,7 +4,8 @@ import Invoice from "../models/Invoice.js";
 import { getTodayRange } from "../utils/dateHelper.js";
 
 
-//    Receptionist / Nurse Dashboard`
+  //  Receptionist Dashboard
+
 export const getReceptionistDashboard = async () => {
   const { start, end } = getTodayRange();
 
@@ -27,7 +28,31 @@ export const getReceptionistDashboard = async () => {
   };
 };
 
-//    Doctor Dashboard
+
+  //  Nurse Dashboard
+
+export const getNurseDashboard = async () => {
+  const { start, end } = getTodayRange();
+
+  const [todayAppointments, totalPatients] = await Promise.all([
+    Appointment.find({ date: { $gte: start, $lte: end } })
+      .populate("patient", "fullName phone patientId bloodGroup allergies")
+      .populate("doctor", "name specialization")
+      .sort({ timeSlot: 1 }),
+    Patient.countDocuments(),
+  ]);
+
+  return {
+    totalPatients,
+    todayAppointments: {
+      count: todayAppointments.length,
+      list: todayAppointments,
+    },
+  };
+};
+
+
+  //  Doctor Dashboard
 
 export const getDoctorDashboard = async (doctorId) => {
   const { start, end } = getTodayRange();
@@ -62,7 +87,8 @@ export const getDoctorDashboard = async (doctorId) => {
 };
 
 
-//    Accountant Dashboard
+  //  Accountant Dashboard
+
 export const getAccountantDashboard = async () => {
   const { start, end } = getTodayRange();
 
