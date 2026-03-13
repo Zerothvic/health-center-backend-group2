@@ -1,8 +1,12 @@
 import {
   getReceptionistDashboard,
+  getNurseDashboard,
   getDoctorDashboard,
   getAccountantDashboard,
 } from "../services/dashboardService.js";
+
+
+  //  Dashboard Controller
 
 export const getDashboard = async (req, res) => {
   try {
@@ -11,8 +15,11 @@ export const getDashboard = async (req, res) => {
 
     switch (role) {
       case "receptionist":
-      case "nurse":
         data = await getReceptionistDashboard();
+        break;
+
+      case "nurse":
+        data = await getNurseDashboard();
         break;
 
       case "doctor":

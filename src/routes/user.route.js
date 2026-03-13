@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { authenticate } from '../middlewares/auth.js';
-import { authorize } from '../middlewares/rbac.js';
+import { authenticate } from '../middlewares/authMiddleware.js';
+import { authorize } from '../middlewares/roleMiddleware.js';
 import { login, logout } from '../controllers/authController.js';
 
 

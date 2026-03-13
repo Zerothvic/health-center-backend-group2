@@ -86,6 +86,7 @@ export const getConsultationsByPatient = async (patientId) => {
   return consultations;
 };
 
+
 export const getConsultationsByDoctor = async (doctorId) => {
   const consultations = await Consultation.find({ doctor: doctorId })
     .populate("patient", "fullName phone patientId")
@@ -117,6 +118,42 @@ export const updateConsultation = async (id, data, doctorId) => {
   delete data.attendedBy;
 
   Object.assign(consultation, data);
+  await consultation.save();
+  return consultation;
+};
+
+
+export const updateVitalSigns = async (id, vitals) => {
+  const consultation = await Consultation.findById(id);
+  if (!consultation) {
+    const error = new Error("Consultation not found");
+    error.status = 404;
+    throw error;
+  }
+
+  // Validate vital signs — no negative values
+  const vitalFields = [
+    "bloodPressureSystolic",
+    "bloodPressureDiastolic",
+    "temperature",
+    "pulse",
+    "weight",
+    "height",
+  ];
+
+  vitalFields.forEach((field) => {
+    if (vitals[field] !== undefined && vitals[field] < 0) {
+      const error = new Error(`${field} cannot be negative`);
+      error.status = 400;
+      throw error;
+    }
+  });
+
+  consultation.vitalSigns = {
+    ...consultation.vitalSigns,
+    ...vitals,
+  };
+
   await consultation.save();
   return consultation;
 };
