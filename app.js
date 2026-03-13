@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import staffRoutes from './src/routes/staff.route.js';
+import staffRoutes from './src/routes/user.route.js';
 
 
 // Load environment variables

@@ -10,6 +10,11 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Email and password are required" });
     }
 
+    // Check if user is still active
+    if (!user.isActive) {
+      return res.status(403).json({ message: "Account deactivated, Contact admin" });
+    }
+
      // Email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {

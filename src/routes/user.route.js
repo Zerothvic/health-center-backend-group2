@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { authMiddleware } from '../middlewares/authMiddleware.js';
+import { authenticate } from '../middlewares/authMiddleware.js';
 import { authorize } from '../middlewares/roleMiddleware.js';
 import { login, logout } from '../controllers/authController.js';
 
@@ -17,7 +17,7 @@ router.post('/login', (req, res) => {
   res.json({ message: "User logged in successfully" });
 });
  
-router.use(authMiddleware); // All routes below require authentication
+router.use(authenticate);
 
 router.post('/logout', (req, res) => {
   res.json({ message: "User logged out successfully" });
