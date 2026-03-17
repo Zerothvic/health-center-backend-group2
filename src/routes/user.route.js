@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Router } from 'express';
 import { authenticate } from '../middlewares/authMiddleware.js';
 import { authorize } from '../middlewares/roleMiddleware.js';
@@ -10,76 +11,97 @@ import {
   getConsultationById
 } from "../services/consultationService.js";
 import { createPatient, getAllPatients, getPatientById, updatePatient } from '../services/patientService.js';
+=======
+// import { Router } from 'express';
+// import { authenticate } from '../middlewares/authMiddleware.js';
+// import { authorize } from '../middlewares/roleMiddleware.js';
+// import { login, logout } from '../controllers/authController.js';
 
-const router = Router();
+
+// // Controller imports (to be created by the team)
+// import * as authCtrl from '../controllers/authController.js';
+// // import * as dashCtrl from '../../controllers/dashController.js';
+// import { 
+//   createConsultation,
+//   getAllConsultations,
+//   getConsultationById
+// } from "../controllers/consultationService.js";
+// import { createPatient, getAllPatients, getPatientById, updatePatient } from '../controllers/patientController.js';
+>>>>>>> e396a61b8c7a3acc113df549aa2349c0c1d03e2d
+
+// const router = Router();
  
-router.get('/health', (req, res) => {
-  res.status(200).json({ message: 'Staff API is active' });
-});
+// router.get('/health', (req, res) => {
+//   res.status(200).json({ message: 'Staff API is active' });
+// });
 
-router.post('/login', login);
+// router.post('/login', login);
  
-router.use(authenticate);
+// router.use(authenticate);
 
-router.post('/logout', logout);
+// router.post('/logout', logout);
 
+<<<<<<< HEAD
 // Dashbaord
+=======
+// // DASHBOARD: Accessible by all staff roles, but logic will filter data based on req.user.role
+>>>>>>> e396a61b8c7a3acc113df549aa2349c0c1d03e2d
 
-router.get('/dashboard', authorize('Receptionist', 'Nurse', 'Doctor', 'Accountant'), (req, res) => {
-  res.json({ 
-    message: `Welcome to the ${req.user.role} dashboard`,
-    role: req.user.role 
-  });
-});
-
-
-// Patient Management
-
-router.post('/patients', authorize('Receptionist','Nurse'), async (req, res, next) => {
-  try {
-    const patient = await createPatient(req.body, req.user.id);
-
-    res.status(201).json({
-      message: "Patient registered successfully",
-      data: patient
-    });
-
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.get('/patients', authorize('Receptionist','Nurse','Doctor'), getAllPatients);
-
-router.get('/patients/:id', authorize('Receptionist','Nurse','Doctor'), getPatientById);
-
-router.put('/patients/:id', authorize('Receptionist','Nurse'), updatePatient);
+// router.get('/dashboard', authorize('Receptionist', 'Nurse', 'Doctor', 'Accountant'), (req, res) => {
+//   res.json({ 
+//     message: `Welcome to the ${req.user.role} dashboard`,
+//     role: req.user.role 
+//   });
+// });
 
 
-// Consultation routes
+// // Patient Management
 
-router.get('/consultations', authorize('Doctor','Nurse'), getAllConsultations);
+// router.post('/patients', authorize('Receptionist','Nurse'), async (req, res, next) => {
+//   try {
+//     const patient = await createPatient(req.body, req.user.id);
 
-router.get('/consultations/:id', authorize('Doctor','Nurse'), getConsultationById);
+//     res.status(201).json({
+//       message: "Patient registered successfully",
+//       data: patient
+//     });
 
-// Clinical Notes
-router.post('/consultations', authorize('Doctor'), async (req, res, next) => {
-  try {
-    const consultation = await createConsultation(req.body, req.user.id);
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
-    res.status(201).json({
-      message: "Consultation created successfully",
-      data: consultation
-    });
+// router.get('/patients', authorize('Receptionist','Nurse','Doctor'), getAllPatients);
 
-  } catch (error) {
-    next(error);
-  }
-});
+// router.get('/patients/:id', authorize('Receptionist','Nurse','Doctor'), getPatientById);
 
-// Billing
-router.get('/billing/summary', authorize('Accountant'), (req, res) => {
-  res.json({ message: "Revenue data loaded" });
-});
+// router.put('/patients/:id', authorize('Receptionist','Nurse'), updatePatient);
 
-export default router;
+
+// // Consultation routes
+
+// router.get('/consultations', authorize('Doctor','Nurse'), getAllConsultations);
+
+// router.get('/consultations/:id', authorize('Doctor','Nurse'), getConsultationById);
+
+// // Clinical Notes
+// router.post('/consultations', authorize('Doctor'), async (req, res, next) => {
+//   try {
+//     const consultation = await createConsultation(req.body, req.user.id);
+
+//     res.status(201).json({
+//       message: "Consultation created successfully",
+//       data: consultation
+//     });
+
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
+// // Billing
+// router.get('/billing/summary', authorize('Accountant'), (req, res) => {
+//   res.json({ message: "Revenue data loaded" });
+// });
+
+// export default router;
