@@ -84,11 +84,10 @@ const patientSchema = new mongoose.Schema(
 );
 
 // Auto-generate patientId using utility function
-patientSchema.pre("save", async function (next) {
+patientSchema.pre("save", async function () {
   if (!this.patientId) {
     this.patientId = await generatePatientId();
   }
-  next();
 });
 
 const Patient = mongoose.model("Patient", patientSchema);

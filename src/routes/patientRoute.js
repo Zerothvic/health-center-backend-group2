@@ -25,4 +25,18 @@ router.get("/search", authorize("Receptionist", "Nurse", "Doctor", "Accountant")
 router.get("/", authorize("Receptionist", "Nurse", "Doctor", "Accountant"), getAll);
 router.get("/:id", authorize("Receptionist", "Nurse", "Doctor", "Accountant"), getOne);
 
+router.post("/", authorize("Receptionist"), async (req, res, next) => {
+  console.log("=== HIT POST /patients ===");
+  console.log("user:", req.user);
+  console.log("body:", req.body);
+  try {
+    const patient = await createPatient(req.body, req.user.id);
+    console.log("=== PATIENT CREATED ===");
+    res.status(201).json(patient);
+  } catch (error) {
+    console.log("=== ERROR ===", error);
+    next(error);
+  }
+});
+
 export default router;
