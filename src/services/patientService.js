@@ -21,7 +21,7 @@ export const createPatient = async (data, userId) => {
   }
 
   const patient = new Patient({ ...data, registeredBy: userId });
-  await patient.save(); // triggers pre("save") → auto generates patientId
+  await patient.save();
   return patient;
 };
 
@@ -76,11 +76,10 @@ export const updatePatient = async (id, data) => {
   return patient;
 };
 
-// check if patient has been deleted
 
 export const deletePatient = async (id) => {
   const patient = await Patient.findByIdAndDelete(id);
- if (!patient) {
+  if (!patient) {
     const error = new Error("Patient not found");
     error.status = 404;
     throw error;

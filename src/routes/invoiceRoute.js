@@ -7,7 +7,7 @@ import {
   getUnpaid,
   payment,
   update,
-  downloadPdf,
+  downloadPDF,
 } from "../controllers/invoiceController.js";
 import {authenticate} from "../middlewares/authMiddleware.js";
 import {authorize} from "../middlewares/roleMiddleware.js";
@@ -18,13 +18,13 @@ const router = Router();
 router.use(authenticate);
 
 // Accountant only
-router.post("/", authorize("accountant"), create);
-router.put("/:id", authorize("accountant"), update);
-router.patch("/:id/payment", authorize("accountant"), payment);
-router.get("/unpaid", authorize("accountant"), getUnpaid);
-router.get("/patient/:patientId", authorize("accountant"), getByPatient);
-router.get("/", authorize("accountant"), getAll);
-router.get("/:id", authorize("accountant"), getOne);
-router.get("/:id/pdf", authorize("accountant"), downloadPdf);
+router.post("/", authorize("Accountant"), create);
+router.put("/:id", authorize("Accountant"), update);
+router.patch("/:id/payment", authorize("Accountant"), payment);
+router.get("/unpaid", authorize("Accountant"), getUnpaid);
+router.get("/patient/:patientId", authorize("Accountant"), getByPatient);
+router.get("/", authorize("Accountant"), getAll);
+router.get("/:id", authorize("Accountant"), getOne);
+router.get("/:id/pdf", authorize("Accountant"), downloadPDF);
 
 export default router;

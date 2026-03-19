@@ -6,27 +6,27 @@ import logRequest from "./src/middlewares/logger.js";
 import errorHandler from "./src/middlewares/errorHandler.js";
 
 import authRoutes         from "./src/routes/authRoute.js";
+import userRoutes         from "./src/routes/userRoute.js";
 import patientRoutes      from "./src/routes/patientRoute.js";
 import appointmentRoutes  from "./src/routes/appointmentRoute.js";
 import consultationRoutes from "./src/routes/consultationRoute.js";
 import invoiceRoutes      from "./src/routes/invoiceRoute.js";
 import dashboardRoutes    from "./src/routes/dashboardRoute.js";
 
-
-
 // Load environment variables
 dotenv.config();
 
 const app = express();
 
-// GLOBAL MIDDLEWARE
-app.use(cors()); // Allows our frontend to talk to this server
-app.use(express.json()); // Parses incoming JSON requests
+// ─── Global Middleware ────────────────────────────────────────────────────────
+app.use(cors());
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(logRequest); 
+app.use(logRequest);
 
-// Routes
+// ─── Routes ───────────────────────────────────────────────────────────────────
 app.use("/api/auth",          authRoutes);
+app.use("/api/users",         userRoutes);        // ✅ added
 app.use("/api/patients",      patientRoutes);
 app.use("/api/appointments",  appointmentRoutes);
 app.use("/api/consultations", consultationRoutes);
@@ -37,10 +37,7 @@ app.get("/", (req, res) => {
   res.status(200).json({ message: "Health Centre API is running" });
 });
 
-
-//  Error handler
-app.use(errorHandler);
-
-
+// ─── Global Error Handler ─────────────────────────────────────────────────────
+app.use(errorHandler); 
 
 export default app;

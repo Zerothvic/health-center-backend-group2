@@ -1,8 +1,9 @@
+// src/controllers/authController.js
 import { registerUser, loginUser, logoutUser } from "../services/authService.js";
 
+// 🔹 Register a new user
 const register = async (req, res) => {
   try {
-    // Pass the request body to the service
     const user = await registerUser(req.body);
 
     res.status(201).json({
@@ -11,7 +12,6 @@ const register = async (req, res) => {
       data: { user },
     });
   } catch (error) {
-    // Handle specific errors like "User already exists"
     res.status(400).json({
       status: "fail",
       message: error.message,
@@ -19,37 +19,42 @@ const register = async (req, res) => {
   }
 };
 
-const login = async (req, res) => {
+// 🔹 Login existing user
+ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Basic validation
+    // 1️⃣ Basic validation
     if (!email || !password) {
       return res.status(400).json({ message: "Email and password are required" });
     }
 
-    // Check if user is still active
-    if (!user.isActive) {
-      return res.status(403).json({ message: "Account deactivated, Contact admin" });
-    }
-
-     // Email format validation
+    // 2️⃣ Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return res.status(400).json({ message: "Invalid email format" });
     }
 
+    // 3️⃣ Call service to login
     const result = await loginUser(email, password);
-    res.status(200).json(result);
+
+    res.status(200).json({
+      status: "success",
+      message: "Login successful",
+      data: result,
+    });
   } catch (error) {
     res.status(error.status || 500).json({ message: error.message });
   }
 };
 
-
+// 🔹 Logout user
 const logout = (req, res) => {
-  const result = logoutUser();
-  res.status(200).json(result);
+  const result = logoutUser(); // returns a simple success message
+  res.status(200).json({
+    status: "success",
+    message: result.message,
+  });
 };
 
 export { register, login, logout };

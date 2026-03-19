@@ -1,46 +1,146 @@
-// PDF generation utility for creating medical invoices
 import PDFDocument from "pdfkit";
 
 
-// Function to generate invoice PDF
-const generateInvoicePDF = (invoiceData, res) => {
+//  Generate Invoice PDF
 
+const generateInvoicePDF = (invoice, res) => {
   const doc = new PDFDocument({ margin: 50 });
-// Set response headers for PDF download
+
+  // Set response headers for PDF download
   res.setHeader(
-    "Content-Disposition",`attachment; filename=invoice-${invoiceData.invoiceNumber}.pdf`
+    "Content-Disposition",
+    `attachment; filename=invoice-${invoice.invoiceNumber}.pdf`
   );
-//   Set content type to PDF
   res.setHeader("Content-Type", "application/pdf");
-//   Pipe the PDF document to the response
+
+  // Pipe PDF to response
   doc.pipe(res);
-//   Add invoice details to the PDF
-  doc.fontSize(20).text("Community Health Center", { align: "center" });
-//   Add a horizontal line 
+
+  
+  //  Header
+  
+  doc.fontSize(20).text("Community Health Centre", { align: "center" });
+  doc.fontSize(12).text("123 Health Street, Lagos, Nigeria", { align: "center" });
   doc.moveDown();
-//  Add invoice title
-  doc.fontSize(16).text("Medical Invoice", { align: "center" });
+
+  // Horizontal line
+  doc.moveTo(50, doc.y).lineTo(550, doc.y).stroke();
+  doc.moveDown();
+
+  
+  //  Invoice Title
+ 
+  doc.fontSize(16).text("MEDICAL INVOICE", { align: "center" });
+  doc.moveDown();
+
+  
+  //  Invoice Details
+  
+  doc.fontSize(12).text(`Invoice No:  ${invoice.invoiceNumber}`);
+  doc.text(`Date:        ${new Date(invoice.createdAt).toLocaleDateString()}`);
+  doc.text(`Patient:     ${invoice.patient.fullName}`);
+  doc.text(`Patient ID:  ${invoice.patient.patientId}`);
+  doc.text(`Phone:       ${invoice.patient.phone}`);
+
+  if (invoice.dueDate) {
+    doc.text(`Due Date:    ${new Date(invoice.dueDate).toLocaleDateString()}`);
+  }
 
   doc.moveDown();
-// Add patient details and invoice information
-  doc.fontSize(12).text(`Invoice No: ${invoiceData.invoiceNumber}`);
-  doc.text(`Patient: ${invoiceData.patientName}`);
-  doc.text(`Date: ${invoiceData.date}`);
 
+  // Horizontal line
+  doc.moveTo(50, doc.y).lineTo(550, doc.y).stroke();
   doc.moveDown();
-//  Add table headers for services and prices
-  doc.fontSize(14).text("Services", { underline: true });
-  doc.text("Price", { align: "right", underline: true });
 
-// Lists all the services provided in the invoice along with their prices
-  invoiceData.services.forEach(service => {
-    doc.text(`${service.name}  -  ₦${service.price}`);
+ 
+  //  Items Table Header
+  
+  doc.fontSize(12).font("Helvetica-Bold");
+  doc.text("Description",  50,  doc.y);
+  doc.text("Qty",          300, doc.y);
+  doc.text("Unit Price",   360, doc.y);
+  doc.text("Total",        460, doc.y);
+  doc.moveDown(0.5);
+
+  // Horizontal line
+  doc.moveTo(50, doc.y).lineTo(550, doc.y).stroke();
+  doc.moveDown(0.5);
+
+  
+  //  Items Table Rows
+  
+  doc.font("Helvetica");
+  invoice.items.forEach((item) => {
+    const y = doc.y;
+    doc.text(item.description,              50,  y);
+    doc.text(String(item.quantity),         300, y);
+    doc.text(`₦${item.unitPrice.toFixed(2)}`, 360, y);
+    doc.text(`₦${item.total.toFixed(2)}`,   460, y);
+    doc.moveDown();
   });
 
+  // Horizontal line
+  doc.moveTo(50, doc.y).lineTo(550, doc.y).stroke();
   doc.moveDown();
-//  Add total amount at the end of the invoice
-  doc.fontSize(14).text(`Total: ₦${invoiceData.total}`, {
-    align: "right"
+
+  
+  //  Totals Section
+  
+  doc.font("Helvetica");
+  doc.text(`Sub Total:`,  350, doc.y);
+  doc.text(`₦${invoice.subTotal.toFixed(2)}`, 460, doc.y);
+  doc.moveDown(0.5);
+
+  if (invoice.discount > 0) {
+    doc.text(`Discount (${invoice.discount}%):`, 350, doc.y);
+    doc.text(`-₦${((invoice.subTotal * invoice.discount) / 100).toFixed(2)}`, 460, doc.y);
+    doc.moveDown(0.5);
+  }
+
+  if (invoice.tax > 0) {
+    doc.text(`Tax (${invoice.tax}%):`, 350, doc.y);
+    doc.text(`₦${((invoice.subTotal * invoice.tax) / 100).toFixed(2)}`, 460, doc.y);
+    doc.moveDown(0.5);
+  }
+
+  doc.font("Helvetica-Bold");
+  doc.text(`Total Amount:`, 350, doc.y);
+  doc.text(`₦${invoice.totalAmount.toFixed(2)}`, 460, doc.y);
+  doc.moveDown(0.5);
+
+  doc.font("Helvetica");
+  doc.text(`Amount Paid:`, 350, doc.y);
+  doc.text(`₦${invoice.amountPaid.toFixed(2)}`, 460, doc.y);
+  doc.moveDown(0.5);
+
+  doc.font("Helvetica-Bold");
+  doc.text(`Balance:`, 350, doc.y);
+  doc.text(`₦${invoice.balance.toFixed(2)}`, 460, doc.y);
+  doc.moveDown();
+
+  
+  //  Payment Status
+  
+  doc.font("Helvetica-Bold")
+    .fontSize(14)
+    .text(`Payment Status: ${invoice.paymentStatus.toUpperCase()}`, {
+      align: "center",
+    });
+
+  doc.moveDown();
+
+  
+  //  Footer
+  
+  doc.moveTo(50, doc.y).lineTo(550, doc.y).stroke();
+  doc.moveDown();
+  doc.font("Helvetica")
+    .fontSize(10)
+    .text("Thank you for choosing Community Health Centre.", {
+      align: "center",
+    });
+  doc.text("For enquiries contact: info@healthcentre.com", {
+    align: "center",
   });
 
   doc.end();

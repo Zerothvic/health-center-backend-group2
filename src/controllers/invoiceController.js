@@ -6,7 +6,7 @@ import {
   getUnpaidInvoices,
   recordPayment,
   updateInvoice,
-  generateInvoicePdf,
+  generateInvoicePdfService 
 } from "../services/invoiceService.js";
 
 // Allowed payment methods
@@ -102,10 +102,11 @@ export const update = async (req, res) => {
 };
 
 // Download Invoice PDF
-export const downloadPdf = async (req, res) => {
+export const downloadPDF = async (req, res) => {
   try {
-    await generateInvoicePdf(req.params.id, res);
+    await generateInvoicePdfService(req.params.id, res);
   } catch (error) {
     res.status(error.status || 500).json({ message: error.message });
   }
 };
+

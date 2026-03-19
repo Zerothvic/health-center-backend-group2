@@ -250,29 +250,18 @@ export const updateInvoice = async (id, data) => {
 };
 
 // Generate and download invoice PDF
-export const generateInvoicePdf = async (id, res) => {
+export const generateInvoicePdfService = async (id, res) => {
   const invoice = await Invoice.findById(id)
-    .populate("patient", "fullName")
-    .populate("generatedBy", "name");
-  
+    .populate("patient", "fullName patientId phone")
+    .populate("appointment", "date timeSlot")
+    .populate("generatedBy", "name role");
+
   if (!invoice) {
     const error = new Error("Invoice not found");
     error.status = 404;
     throw error;
   }
 
-  // Format data for PDF generation
-  const pdfData = {
-    invoiceNumber: invoice.invoiceNumber,
-    patientName: invoice.patient.fullName,
-    date: invoice.createdAt.toLocaleDateString(),
-    services: invoice.items.map(item => ({
-      name: `${item.description} (Qty: ${item.quantity})`,
-      price: item.total
-    })),
-    total: invoice.totalAmount
-  };
-
-  // Generate and send PDF
-  generateInvoicePDF(pdfData, res);
+  // Pass invoice directly — util now uses invoice model shape
+  generateInvoicePDF(invoice, res);
 };
