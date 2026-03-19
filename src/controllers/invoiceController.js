@@ -104,12 +104,7 @@ export const update = async (req, res) => {
 // Download Invoice PDF
 export const downloadPDF = async (req, res) => {
   try {
-    // Fetch the full invoice object from DB
-    const invoice = await getInvoiceById(req.params.id);
-
-    // Pass the invoice to the PDF generator
-    generateInvoicePdfService(invoice, res);
-
+    await generateInvoicePdfService(req.params.id, res);
   } catch (error) {
     res.status(error.status || 500).json({ message: error.message });
   }

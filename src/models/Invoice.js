@@ -114,15 +114,15 @@ const invoiceSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// 🔹 Combined pre-save hook for invoice number & financial calculations
-invoiceSchema.pre("save", async function (next) {
+// Combined pre-save hook for invoice number & financial calculations
+invoiceSchema.pre("save", async function () {
   // Generate invoice number if missing
   if (!this.invoiceNumber) {
     this.invoiceNumber = await generateInvoiceNumber();
   }
 
   // Calculate each item total automatically
-  this.items.forEach(item => {
+  this.items.forEach((item) => {
     item.total = item.quantity * item.unitPrice;
   });
 
@@ -151,8 +151,6 @@ invoiceSchema.pre("save", async function (next) {
   } else {
     this.paymentStatus = "unpaid";
   }
-
-  next();
 });
 
 const Invoice = mongoose.model("Invoice", invoiceSchema);

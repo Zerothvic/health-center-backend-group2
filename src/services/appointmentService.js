@@ -14,7 +14,7 @@ export const bookAppointment = async (data, userId) => {
 
   // Check if doctor exists and has doctor role
   const doctor = await User.findById(data.doctor);
-  if (!doctor || doctor.role !== "doctor") {
+  if (!doctor || doctor.role !== "Doctor") {
     const error = new Error("Doctor not found");
     error.status = 404;
     throw error;
